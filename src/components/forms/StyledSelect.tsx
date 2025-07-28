@@ -2,6 +2,7 @@ import React from 'react';
 
 type StyledSelectProps = React.SelectHTMLAttributes<HTMLSelectElement> & {
   label?: string;
+  errors?: string;
 };
 
 const StyledSelect = React.forwardRef<HTMLSelectElement, StyledSelectProps>(
@@ -16,6 +17,7 @@ const StyledSelect = React.forwardRef<HTMLSelectElement, StyledSelectProps>(
         >
           {children}
         </select>
+        {rest.errors && rest.errors.length > 0 && <span className="text-sm text-red-500">{rest.errors}</span>}
       </div>
     );
   }
