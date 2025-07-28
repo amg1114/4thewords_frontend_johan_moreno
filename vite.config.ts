@@ -14,6 +14,7 @@ export default defineConfig(({ mode }) => {
         '/api': {
           changeOrigin: true,
           target: env.VITE_API_URL,
+          rewrite: (path) => path.replace(/^\/api/, ''),
         },
       },
     },
@@ -25,6 +26,7 @@ export default defineConfig(({ mode }) => {
         '@pages': path.resolve(__dirname, 'src/pages'),
         '@utils': path.resolve(__dirname, 'src/utils'),
         '@hooks': path.resolve(__dirname, 'src/hooks'),
+        '@contexts': path.resolve(__dirname, 'src/contexts'),
         '@providers': path.resolve(__dirname, 'src/providers'),
         '@services': path.resolve(__dirname, 'src/services'),
         '@models': path.resolve(__dirname, 'src/models'),
