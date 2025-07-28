@@ -1,7 +1,7 @@
 import { DashboardContext } from '@contexts/DashboardContext';
 import useAuth from '@hooks/useAuth';
 import type { Category } from '@models/category.interface';
-import type { Legend, LegendCreateData } from '@models/legend.interface';
+import type { Legend, LegendCreateData, LegendUpdateData } from '@models/legend.interface';
 import type { Province, Canton, District } from '@models/location.interface';
 import type { DashboardFilters } from '@pages/dashboard/legend-list/_hooks/useDashboardFilters';
 import axios from 'axios';
@@ -75,6 +75,37 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const updateLegend = async (id: number, legendData: LegendUpdateData) => {
+    try {
+      const formData = new FormData();
+      Object.entries(legendData).forEach(([key, value]) => {
+        if (value !== undefined) {
+          formData.append(key, value instanceof File ? value : String(value));
+        }
+      });
+
+      await axios.patch<Legend>(`/api/legend/${id}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      await fetchLegends();
+      navigate('/dashboard/legends');
+    } catch (error) {
+      console.error('Error updating legend:', error);
+    }
+  };
+
+  const deleteLegend = async (id: number) => {
+    try {
+      await axios.delete(`/api/legend/${id}`);
+      await fetchLegends();
+    } catch (error) {
+      console.error('Error deleting legend:', error);
+    }
+  };
+
   useEffect(() => {
     if (!user) {
       setData({
@@ -118,7 +149,7 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <DashboardContext.Provider value={{ data, legends, fetchLegends, createLegend }}>
+    <DashboardContext.Provider value={{ data, legends, fetchLegends, createLegend, updateLegend, deleteLegend }}>
       {children}
     </DashboardContext.Provider>
   );
