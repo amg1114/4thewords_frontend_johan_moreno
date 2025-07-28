@@ -5,6 +5,8 @@ import useDashboard from '@hooks/useDashboard';
 import type { Legend } from '@models/legend.interface';
 import { useDashboardFilters } from './_hooks/useDashboardFilters';
 import StyledButton from '@components/StyledButton';
+import { PlusIcon } from 'lucide-react';
+import { Link } from 'react-router';
 
 export function LegendList() {
   const {
@@ -15,7 +17,15 @@ export function LegendList() {
   const { register, handleSubmit } = useDashboardFilters();
   return (
     <section className="py-6">
-      <h1 className="mb-6 text-2xl font-semibold">Legend List</h1>
+      <h1 className="mb-6 flex items-center text-2xl font-semibold">
+        Legend List
+        <Link
+          to="/dashboard/legends/create"
+          className="ml-2 aspect-square rounded bg-blue-600 text-white transition-colors hover:bg-white hover:text-blue-600 hover:underline"
+        >
+          <PlusIcon />
+        </Link>
+      </h1>
 
       <form className="flex flex-wrap gap-3" onSubmit={handleSubmit}>
         <div className="grid w-full grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
