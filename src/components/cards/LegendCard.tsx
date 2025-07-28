@@ -2,13 +2,14 @@ import { formatDistanceToNow } from 'date-fns';
 import type { Legend } from '@models/legend.interface';
 import clsx from 'clsx';
 import { useState } from 'react';
-import { CalendarIcon, CircleUserRound, SquarePenIcon, TagIcon } from 'lucide-react';
+import { CalendarIcon, CircleUserRound, SquarePenIcon, TagIcon, TrashIcon } from 'lucide-react';
 import { Link } from 'react-router';
+import useDashboard from '@hooks/useDashboard';
 
 export default function LegendCard({ legend }: { legend: Legend }) {
   const [loadedImage, setLoadedImage] = useState(false);
   const relativeDate = formatDistanceToNow(new Date(legend.date));
-
+  const { deleteLegend } = useDashboard();
   return (
     <div className="flex flex-col gap-2 rounded border border-gray-200 p-4">
       <img
@@ -36,6 +37,13 @@ export default function LegendCard({ legend }: { legend: Legend }) {
         >
           <SquarePenIcon />
         </Link>
+        <button
+          type="button"
+          className="rounded bg-red-600 px-2 py-1 text-xs text-white transition-colors hover:bg-red-700"
+          onClick={() => deleteLegend(legend.id)}
+        >
+          <TrashIcon />
+        </button>
       </h2>
       <p>{legend.description}</p>
       <span className="flex w-fit items-center gap-1 text-xs text-gray-500">

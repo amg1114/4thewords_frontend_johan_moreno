@@ -28,7 +28,7 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
     categories: [],
     isLoading: false,
   });
-
+  const [legendToDelete, setLegendToDelete] = useState<number | null>(null);
   const fetchLegends = async (filters?: DashboardFilters) => {
     let url = '/api/legend';
     if (filters) {
@@ -98,9 +98,14 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
   };
 
   const deleteLegend = async (id: number) => {
+    setLegendToDelete(id);
+  };
+
+  const handleDeleteConfirmation = async () => {
     try {
-      await axios.delete(`/api/legend/${id}`);
+      await axios.delete(`/api/legend/${legendToDelete}`);
       await fetchLegends();
+      setLegendToDelete(null);
     } catch (error) {
       console.error('Error deleting legend:', error);
     }
@@ -150,6 +155,30 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <DashboardContext.Provider value={{ data, legends, fetchLegends, createLegend, updateLegend, deleteLegend }}>
+      {legendToDelete !== null && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
+          <div className="rounded-lg bg-white p-6">
+            <h2>Are you sure?</h2>
+            <p>This action cannot be undone.</p>
+            <div className="mt-4 flex justify-end gap-2">
+              <button
+                type="button"
+                className="rounded bg-gray-300 px-4 py-2 text-sm text-gray-700 hover:bg-gray-400"
+                onClick={() => setLegendToDelete(null)}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="rounded bg-red-600 px-4 py-2 text-sm text-white hover:bg-red-700"
+                onClick={() => handleDeleteConfirmation()}
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       {children}
     </DashboardContext.Provider>
   );
