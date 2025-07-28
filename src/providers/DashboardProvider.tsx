@@ -1,7 +1,7 @@
 import { DashboardContext } from '@contexts/DashboardContext';
 import useAuth from '@hooks/useAuth';
 import type { Category } from '@models/category.interface';
-import type { Legend } from '@models/legend.interface';
+import type { Legend, LegendCreateData } from '@models/legend.interface';
 import type { Province, Canton, District } from '@models/location.interface';
 import type { DashboardFilters } from '@pages/dashboard/legend-list/_hooks/useDashboardFilters';
 import axios from 'axios';
@@ -29,17 +29,19 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
     isLoading: false,
   });
 
-  const filterLegends = async (filters: DashboardFilters) => {
+  const fetchLegends = async (filters?: DashboardFilters) => {
     let url = '/api/legend';
-    const params: Record<string, string> = {};
-    Object.entries(filters).forEach(([key, value]) => {
-      if (value) {
-        params[key] = value;
-      }
-    });
+    if (filters) {
+      const params: Record<string, string> = {};
+      Object.entries(filters).forEach(([key, value]) => {
+        if (value) {
+          params[key] = value;
+        }
+      });
 
-    if (Object.keys(params).length > 0) {
-      url += '?' + new URLSearchParams(params).toString();
+      if (Object.keys(params).length > 0) {
+        url += '?' + new URLSearchParams(params).toString();
+      }
     }
 
     try {
@@ -48,6 +50,28 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
     } catch (error) {
       setLegends([]);
       console.error('Error fetching legends:', error);
+    }
+  };
+
+  const createLegend = async (legendData: LegendCreateData) => {
+    try {
+      const formData = new FormData();
+      Object.entries(legendData).forEach(([key, value]) => {
+        if (value !== undefined) {
+          formData.append(key, value);
+        }
+      });
+
+      await axios.post<Legend>('/api/legend', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      await fetchLegends();
+      navigate('/dashboard/legends');
+    } catch (error) {
+      console.error('Error creating legend:', error);
     }
   };
 
@@ -68,8 +92,9 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
       setData((prevData: DashboardData) => ({ ...prevData, isLoading: true }));
 
       try {
-        const [legendsRes, provincesRes, cantonsRes, districtsRes] = await Promise.all([
+        const [legendsRes, categoriesRes, provincesRes, cantonsRes, districtsRes] = await Promise.all([
           axios.get<Legend[]>('/api/legend'),
+          axios.get<Legend[]>('/api/legend/categories'),
           axios.get<Province[]>('/api/location/provinces'),
           axios.get<Canton[]>('/api/location/cantons'),
           axios.get<District[]>('/api/location/districts'),
@@ -77,11 +102,10 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
 
         setLegends(legendsRes.data);
         setData({
-          // legends: legendsRes.data,
           provinces: provincesRes.data,
           cantons: cantonsRes.data,
           districts: districtsRes.data,
-          categories: [],
+          categories: categoriesRes.data,
           isLoading: false,
         });
       } catch (error) {
@@ -94,7 +118,7 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <DashboardContext.Provider value={{ data, legends, fetchLegends: filterLegends }}>
+    <DashboardContext.Provider value={{ data, legends, fetchLegends, createLegend }}>
       {children}
     </DashboardContext.Provider>
   );
