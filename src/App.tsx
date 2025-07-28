@@ -5,6 +5,7 @@ import AuthProvider from '@providers/AuthProvider';
 import { RegisterPage } from '@pages/auth/register/RegisterPage';
 import { DashboardLayout } from '@pages/dashboard/DashboardLayout';
 import { LegendList } from '@pages/dashboard/legend-list/LegendList';
+import CreateLegend from '@pages/dashboard/create/CreateLegend';
 
 function App() {
   const router = createBrowserRouter([
@@ -31,6 +32,10 @@ function App() {
           path: 'legends',
           index: true,
           element: <LegendList />,
+        },
+        {
+          path: 'legends/create',
+          element: <CreateLegend />,
         },
       ],
     },
