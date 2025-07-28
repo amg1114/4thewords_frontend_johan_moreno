@@ -1,1 +1,9 @@
 @import 'tailwindcss';
+
+@layer base {
+  .lucide {
+    width: 1em;
+    height: 1em;
+    @apply text-inherit;
+  }
+}
