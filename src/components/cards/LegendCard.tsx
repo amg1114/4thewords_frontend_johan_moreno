@@ -2,7 +2,7 @@ import { formatDistanceToNow } from 'date-fns';
 import type { Legend } from '@models/legend.interface';
 import clsx from 'clsx';
 import { useState } from 'react';
-import { CalendarIcon, CircleUserRound, SquarePenIcon, TagIcon, TrashIcon } from 'lucide-react';
+import { CalendarIcon, CircleUserRound, MapPin, SquarePenIcon, TagIcon, TrashIcon } from 'lucide-react';
 import { Link } from 'react-router';
 import useDashboard from '@hooks/useDashboard';
 
@@ -15,7 +15,7 @@ export default function LegendCard({ legend }: { legend: Legend }) {
       <img
         src={legend.image_url}
         alt={legend.name}
-        className={clsx('mb-2 h-auto w-full rounded object-cover', {
+        className={clsx('mx-auto mb-2 h-56 w-auto rounded object-cover', {
           hidden: !loadedImage,
         })}
         onLoad={() => setLoadedImage(true)}
@@ -48,6 +48,9 @@ export default function LegendCard({ legend }: { legend: Legend }) {
       <p>{legend.description}</p>
       <span className="flex w-fit items-center gap-1 text-xs text-gray-500">
         <CircleUserRound /> by {legend.publisher.name}
+      </span>
+      <span className="flex w-fit items-center gap-1 text-xs text-gray-500">
+        <MapPin /> {legend.province.name}, {legend.canton.name} - {legend.district.name}
       </span>
     </div>
   );
