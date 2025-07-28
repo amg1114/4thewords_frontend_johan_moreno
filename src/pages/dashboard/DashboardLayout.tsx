@@ -12,10 +12,10 @@ export function DashboardLayout() {
 
   return (
     <div className="container mx-auto px-4">
-      <header className="sticky top-0 z-20 flex items-center justify-between border-b border-b-gray-300 bg-white py-4">
+      <header className="sticky top-0 z-20 flex flex-col items-center justify-between border-b border-b-gray-300 bg-white py-4 md:flex-row">
         <span className="font-bold text-blue-500 uppercase">4TheWordsLegends</span>
 
-        <div className="flex flex-col items-end">
+        <div className="flex flex-col items-center md:items-end">
           <span className="text-base font-bold uppercase">{user.name}</span>
           <StyledLink href={'mailto:' + user.email}>{user.email}</StyledLink>
         </div>
