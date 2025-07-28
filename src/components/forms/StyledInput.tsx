@@ -8,7 +8,7 @@ interface StyledInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 
 const StyledInput = forwardRef<HTMLInputElement, StyledInputProps>((props, ref) => {
   return (
-    <div className="flex flex-col space-y-1">
+    <div className={clsx('flex flex-col space-y-1')}>
       {props.label && <label className="text-sm font-medium text-gray-700">{props.label}</label>}
       <input
         ref={ref}
