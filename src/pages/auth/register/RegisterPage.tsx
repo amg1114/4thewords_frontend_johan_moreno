@@ -1,15 +1,22 @@
 import StyledInput from '@components/forms/StyledInput';
 import StyledButton from '@components/StyledButton';
 import StyledLink from '@components/StyledLink';
-import useLogin from './_hooks/useLogin';
+import useRegister from './_hooks/useRegister';
 
-export function LoginPage() {
-  const { isLoading, errors, handleSubmit, register } = useLogin();
+export function RegisterPage() {
+  const { isLoading, errors, handleSubmit, register } = useRegister();
   return (
     <form className="flex flex-col space-y-4" onSubmit={handleSubmit}>
-      <h1 className="text-center text-2xl font-semibold">Login</h1>
+      <h1 className="text-center text-2xl font-semibold">Register</h1>
       {isLoading && <p className="text-center text-gray-500">Loading...</p>}
 
+      <StyledInput
+        type="text"
+        {...register('name')}
+        errors={errors.name?.message}
+        label="Name"
+        placeholder="John Doe"
+      />
       <StyledInput
         type="text"
         {...register('email')}
@@ -26,9 +33,9 @@ export function LoginPage() {
       />
 
       <StyledButton type="submit" variant="primary">
-        Login
+        Register
       </StyledButton>
-      <StyledLink to="/register">You don't have an account?</StyledLink>
+      <StyledLink to="/login">You already have an account?</StyledLink>
     </form>
   );
 }
