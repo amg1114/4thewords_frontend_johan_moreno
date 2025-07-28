@@ -1,8 +1,8 @@
+import axios from 'axios';
 import { zodResolver } from '@hookform/resolvers/zod';
 import useDashboard from '@hooks/useDashboard';
 import type { Legend, LegendUpdateData } from '@models/legend.interface';
 import { legendUpdateSchema } from '@utils/validators/legend';
-import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useParams } from 'react-router';
@@ -31,6 +31,7 @@ export default function useEditLegend() {
         setCurrentLegend(response.data);
       } catch (error) {
         console.error('Error fetching legend:', error);
+        throw new Response('Not Found', { status: 404 });
       }
     };
 
