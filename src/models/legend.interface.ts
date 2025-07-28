@@ -2,7 +2,7 @@ import type z from 'zod';
 import type { Category } from './category.interface';
 import type { Canton, District, Province } from './location.interface';
 import type { User } from './user.interface';
-import type { legendCreateSchema } from '@utils/validators/legend';
+import type { legendCreateSchema, legendUpdateSchema } from '@utils/validators/legend';
 
 export interface Legend {
   id: number;
@@ -18,3 +18,4 @@ export interface Legend {
 }
 
 export type LegendCreateData = z.infer<typeof legendCreateSchema>;
+export type LegendUpdateData = z.infer<typeof legendUpdateSchema>;

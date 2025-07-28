@@ -2,7 +2,8 @@ import { formatDistanceToNow } from 'date-fns';
 import type { Legend } from '@models/legend.interface';
 import clsx from 'clsx';
 import { useState } from 'react';
-import { CalendarIcon, CircleUserRound, TagIcon } from 'lucide-react';
+import { CalendarIcon, CircleUserRound, SquarePenIcon, TagIcon } from 'lucide-react';
+import { Link } from 'react-router';
 
 export default function LegendCard({ legend }: { legend: Legend }) {
   const [loadedImage, setLoadedImage] = useState(false);
@@ -27,7 +28,15 @@ export default function LegendCard({ legend }: { legend: Legend }) {
           <CalendarIcon /> {relativeDate} ago
         </time>
       </div>
-      <h2 className="text-xl font-bold text-gray-600">{legend.name}</h2>
+      <h2 className="flex items-center gap-2 text-xl font-bold text-gray-600">
+        {legend.name}
+        <Link
+          to={`/dashboard/legends/edit/${legend.id}`}
+          className="rounded bg-green-600 px-2 py-1 text-xs text-white transition-colors hover:bg-green-700"
+        >
+          <SquarePenIcon />
+        </Link>
+      </h2>
       <p>{legend.description}</p>
       <span className="flex w-fit items-center gap-1 text-xs text-gray-500">
         <CircleUserRound /> by {legend.publisher.name}
