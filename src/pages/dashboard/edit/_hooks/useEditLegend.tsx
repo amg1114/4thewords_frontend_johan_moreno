@@ -21,7 +21,6 @@ export default function useEditLegend() {
   });
 
   const onSubmit = (data: LegendUpdateData) => {
-    alert('Updating legend...');
     updateLegend(Number(id), data);
   };
 
