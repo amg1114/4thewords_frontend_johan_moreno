@@ -23,7 +23,7 @@ export default function useRegister() {
   const onSubmit = async (data: UserRegister) => {
     try {
       await signUp(data);
-      navigate('/dashboard');
+      navigate('/dashboard/legends');
     } catch (error) {
       console.error('Register failed:', error);
 
@@ -42,7 +42,7 @@ export default function useRegister() {
 
   useEffect(() => {
     if (user) {
-      navigate('/dashboard');
+      navigate('/dashboard/legends');
     }
   }, [user, navigate]);
 
