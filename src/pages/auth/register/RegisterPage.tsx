@@ -9,6 +9,7 @@ export function RegisterPage() {
     <form className="flex flex-col space-y-4" onSubmit={handleSubmit}>
       <h1 className="text-center text-2xl font-semibold">Register</h1>
       {isLoading && <p className="text-center text-gray-500">Loading...</p>}
+      {errors.root && <p className="text-center text-red-500">{errors.root.message}</p>}
 
       <StyledInput
         type="text"

@@ -5,6 +5,7 @@ import { userLoginSchema } from '@utils/validators/user';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router';
 import { useEffect } from 'react';
+import { AxiosError } from 'axios';
 
 export default function useLogin() {
   const navigate = useNavigate();
@@ -13,6 +14,7 @@ export default function useLogin() {
     formState: { errors },
     handleSubmit,
     register,
+    setError,
   } = useForm<UserLogin>({
     resolver: zodResolver(userLoginSchema),
   });
@@ -28,6 +30,16 @@ export default function useLogin() {
       await logIn(data);
       navigate('/dashboard');
     } catch (error) {
+      let errorMessage = 'Error al iniciar sesión. Intenta de nuevo.';
+
+      if (error instanceof AxiosError) {
+        errorMessage = error.response?.data?.detail || errorMessage;
+      }
+
+      setError('root', {
+        type: 'manual',
+        message: errorMessage,
+      });
       console.error('Login failed:', error);
     }
   };
