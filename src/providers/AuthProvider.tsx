@@ -8,17 +8,22 @@ const TOKEN_KEY = 'auth_token';
 export interface AuthProviderProps {
   children: React.ReactNode;
 }
+
 export default function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [token, setToken] = useState<string | null>(null);
 
   const updateToken = (newToken: string) => {
-    if (newToken) {
-      axios.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
-    }
     setToken(newToken);
     localStorage.setItem(TOKEN_KEY, newToken);
+    axios.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
+  };
+
+  const clearToken = () => {
+    setToken(null);
+    localStorage.removeItem(TOKEN_KEY);
+    delete axios.defaults.headers.common['Authorization'];
   };
 
   const register = async (data: UserRegister) => {
@@ -31,16 +36,9 @@ export default function AuthProvider({ children }: AuthProviderProps) {
     }
   };
 
-  const logOut = () => {
-    delete axios.defaults.headers.common['Authorization'];
-    setUser(null);
-    setToken(null);
-    localStorage.removeItem(TOKEN_KEY);
-  };
-
   const logIn = async ({ email, password }: UserLogin) => {
     try {
-      const res = await axios.post<string>(`/api/auth/login`, { email, password });
+      const res = await axios.post<string>('/api/auth/login', { email, password });
       updateToken(res.data);
     } catch (error) {
       console.error('Login failed:', error);
@@ -48,16 +46,23 @@ export default function AuthProvider({ children }: AuthProviderProps) {
     }
   };
 
+  const logOut = () => {
+    clearToken();
+    setUser(null);
+  };
+
+  // Cargar token desde localStorage al montar
   useEffect(() => {
     const storedToken = localStorage.getItem(TOKEN_KEY);
     if (storedToken) {
-      setToken(storedToken);
+      updateToken(storedToken);
     }
   }, []);
 
+  // Obtener datos del usuario si hay token
   useEffect(() => {
     const fetchUser = async () => {
-      if (!token) throw new Error('No token found');
+      if (!token) return;
 
       setIsLoading(true);
       try {
@@ -74,7 +79,8 @@ export default function AuthProvider({ children }: AuthProviderProps) {
     if (token && !user) {
       fetchUser();
     }
-  }, [token, user]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [token]);
 
   return (
     <AuthContext.Provider value={{ user, token, isLoading, logOut, logIn, register }}>{children}</AuthContext.Provider>

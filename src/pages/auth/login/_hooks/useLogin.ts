@@ -21,14 +21,14 @@ export default function useLogin() {
 
   useEffect(() => {
     if (user) {
-      navigate('/dashboard');
+      navigate('/dashboard/legends');
     }
   }, [user, navigate]);
 
   const onSubmit = async (data: UserLogin) => {
     try {
       await logIn(data);
-      navigate('/dashboard');
+      navigate('/dashboard/legends');
     } catch (error) {
       let errorMessage = 'Error al iniciar sesión. Intenta de nuevo.';
 
